@@ -1,0 +1,4 @@
+docs/_site
+docs/.jeckyll-cache
+__pycache__
+*.egg-info
