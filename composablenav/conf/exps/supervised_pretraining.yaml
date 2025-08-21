@@ -1,0 +1,30 @@
+# @package _global_
+
+defaults:
+  - /dataloader/pretrain
+  - /dataset/pretrain
+  - /model/base_vit
+  - /trainer/lightning
+
+model_trainer:
+  _target_: composablenav.train.supervised_pretraining.DiffusionTrainerModel
+  cfg:
+    process_batch_func:
+      _target_: composablenav.train.train_utils.diffusion_process_batch
+      _partial_: true
+    validate_func:
+      _target_: composablenav.train.train_utils.validate
+      _partial_: true
+    visualizer_func:
+      _target_: composablenav.train.train_utils.visualize
+      _partial_: true
+    sample_func:
+      _target_: composablenav.models.diffusion_components.diffusion_sample_fn
+      _partial_: true
+    normalize_func:
+      _target_: composablenav.misc.normalizers.PathNormalizer
+      grid_size: ${dataset.env.grid_size}
+
+devices: 1
+val_n_epochs: 100
+primitive: pretrain

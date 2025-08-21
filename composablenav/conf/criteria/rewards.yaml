@@ -1,0 +1,45 @@
+# @package _global_
+
+criteria:
+  pass_from_left:
+    _target_: composablenav.misc.critic.pass_from_reward
+    _partial_: true 
+
+    # args
+    pass_from_direction: left
+    goal_radius: 2
+
+  pass_from_right:
+    _target_: composablenav.misc.critic.pass_from_reward
+    _partial_: true 
+
+    # args
+    pass_from_direction: right
+    goal_radius: 2
+
+  follow:
+    _target_: composablenav.misc.critic.follow_reward
+    _partial_: true 
+
+    # args
+    follow_width: 0.5
+    follow_min_dist: 1
+    follow_max_dist: 5 # 5, 3
+    goal_radius: 2
+
+  yield:
+    _target_: composablenav.misc.critic.yield_reward
+    _partial_: true 
+
+    # args
+    obstacle_width: 1
+    obstacle_front_min_dist: 0.5
+    obstacle_front_max_dist: 4
+    goal_radius: 2
+
+  walk_over:
+    _target_: composablenav.misc.critic.walk_over_reward
+    _partial_: true 
+
+    # args
+    goal_radius: 2

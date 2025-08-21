@@ -1,0 +1,10 @@
+# @package _global_
+
+dataloader:
+  _target_: composablenav.train.dataloader_base.ProcessObsHelper
+
+  # args
+  max_padded_len: 128 
+  max_obj_traj_len: 384 # 128 * 3
+  max_padded_obj_num: 10
+  max_padded_terrain_num: 10

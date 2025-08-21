@@ -1,0 +1,57 @@
+# @package _global_
+
+model_trainer:
+  _recursive_: false
+  cfg:
+    model: ${model}
+    lr: 2e-4
+    dt: ${dataset.env.env_dt}
+    generate_steps: 8
+    ema:
+      beta: 0.995
+      step_start_ema: 200
+      
+    plot_dir: ${save_dir}/plots
+      
+trainer:
+  _target_: lightning.pytorch.trainer.trainer.Trainer
+  max_epochs: 4500
+  devices: ${devices}
+  accelerator: auto
+  precision: 16-mixed
+  log_every_n_steps: 10
+  gradient_clip_val: 1.0
+  check_val_every_n_epoch: ${val_n_epochs}
+  num_sanity_val_steps: 0
+  enable_checkpointing: true
+
+  strategy:
+    _target_: lightning.pytorch.strategies.DDPStrategy
+    find_unused_parameters: true
+
+  # logger:
+  #   _target_: lightning.pytorch.loggers.wandb.WandbLogger
+  #   project: ${project_name}
+  #   name: ${exp_name}
+  #   save_dir: ${save_dir}
+  #   log_model: true
+  
+  logger:
+    _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
+    save_dir: ${base_dir}
+    name: ${exp_name}
+
+  callbacks:
+    - _target_: lightning.pytorch.callbacks.ModelCheckpoint
+      every_n_epochs: ${val_n_epochs}
+      save_top_k: 0
+      save_last: true
+      dirpath: ${save_dir}
+      filename: "model_{epoch}"
+
+    - _target_: lightning.pytorch.callbacks.LearningRateMonitor
+      logging_interval: "step"
+
+    - _target_: lightning.pytorch.callbacks.RichProgressBar
+
+    - _target_: lightning.pytorch.callbacks.DeviceStatsMonitor

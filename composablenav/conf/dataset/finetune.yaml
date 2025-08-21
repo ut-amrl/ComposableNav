@@ -1,0 +1,15 @@
+# @package _global_
+
+defaults:
+  - /dataset/base
+
+dataset:
+  env:
+    dynamic_obstacle:
+      max_num_obstacles: 1
+      min_num_obstacles: 1
+      obstacle_radius: 1
+    
+    static_obstacle:
+      min_num_obstacles: 1
+      max_num_obstacles: 1

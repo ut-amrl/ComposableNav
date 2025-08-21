@@ -1,0 +1,75 @@
+# @package _global_
+
+model:
+    _target_: composablenav.models.diffusion.GaussianDiffusion
+    _recursive_: false
+    nn_model:
+        _target_: composablenav.models.temporal_unet_cond.TemporalUnetCond
+        input_dim: 2
+        hidden_dim: 64
+        dropout: 0.1
+        dim_head: 32
+        num_heads: 4
+        context:
+            # for object centric training
+            context_dim: 256
+            vit_args:
+                output_dim: 256
+                embed_dim: 128
+                dim_head: 128
+                num_heads: 1
+                num_layers: 3 
+                dropout: 0.1
+                emb_dropout: 0.1
+                max_seq_len: 128 # not being used
+            encoders:
+                dynamic_obs_encoder:
+                    name: dynamic_obs_encoder
+                    model_name: ObstacleMLPEncoder
+                    args:
+                        input_dim: 384 # 128 x 3
+                        hidden_dim: 128
+                        output_dim: 128
+                static_obs_encoder:
+                    name: static_obs_encoder
+                    model_name: StaticObstacleMLPEncoder
+                    args: 
+                        input_dim: 8
+                        hidden_dim: 64
+                        output_dim: 128
+                        num_octaves: 8
+                        norm_factor: 30
+                terrain_encoder:
+                    name: terrain_encoder
+                    model_name: GoalMLPEncoder
+                    args: 
+                        input_dim: 5
+                        hidden_dim: 64
+                        output_dim: 128
+                goal_encoder:
+                    name: goal_encoder
+                    model_name: GoalMLPEncoder
+                    args: 
+                        input_dim: 2
+                        hidden_dim: 64
+                        output_dim: 128
+
+    noise_scheduler:
+        _target_: composablenav.models.diffusion_components.exponential_beta_schedule
+        _partial_: true
+
+    loss_fn: 
+        _target_: torch.nn.MSELoss
+        reduction: none
+
+    apply_cond_fn: 
+        _target_: composablenav.models.diffusion_components.apply_initial_coordinate_cond
+        _partial_: true
+
+    config:
+        n_timesteps: 25
+        clipped_denoised: true
+        predict_epsilon: true
+        cfg_drop_prob: 0.2
+        cfg_guide_w: 3
+        do_compile: ${compile}

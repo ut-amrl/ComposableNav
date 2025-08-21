@@ -1,0 +1,10 @@
+# @package _global_
+
+defaults:
+  - /dataloader/finetune
+  - /dataset/finetune
+  - /model/base_vit_ddpo
+  - /trainer/ppo
+  - /criteria/rewards
+
+primitive: ???

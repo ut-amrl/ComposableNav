@@ -1,0 +1,11 @@
+# @package _global_
+
+data_path: ???
+exp_name: ???
+base_dir: training_results
+save_dir: ${base_dir}/${exp_name}
+
+checkpoint: null 
+compile: false
+
+project_name: composablenav

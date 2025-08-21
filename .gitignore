@@ -1,0 +1,11 @@
+docs/_site
+docs/.jeckyll-cache
+__pycache__
+*.egg-info
+outputs/
+generated_data/
+wandb/
+*.ckpt
+composablenav/**/*.gif
+composablenav/**/*.png
+composablenav/**/*.json

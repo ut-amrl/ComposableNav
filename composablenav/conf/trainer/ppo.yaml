@@ -1,0 +1,65 @@
+# @package _global_
+
+num_rollout: 32
+num_episodes: 1000
+save_at_epochs: 10
+
+env:
+  _target_: composablenav.models.ddpo_agent.Maze2DEnv
+  _recursive_: false
+  cfg:
+    dataset: ${dataset}
+
+    dataloader: ${dataloader}
+
+    path_normalizer:
+      _target_: composablenav.misc.normalizers.PathNormalizer
+      grid_size: ${dataset.env.grid_size}
+
+agent:
+  _target_: composablenav.models.ddpo_agent.DDPOAgent
+  _recursive_: false
+  cfg:
+    reward_model:
+      _target_: composablenav.models.ddpo_agent.RewardModel
+      _recursive_: false
+      cfg:         
+        path_normalizer: 
+          _target_: composablenav.misc.normalizers.PathNormalizer
+          grid_size: ${dataset.env.grid_size}
+
+        criteria: ${criteria}
+
+        primitive: ${primitive}
+
+        env_dt: ${dataset.env.env_dt}
+
+    replay_buffer:
+      _target_: composablenav.models.ddpo_agent.ReplayBuffer 
+      cfg:
+        inner_loop_mini_batch_size: 8
+
+    process_batch_func:
+      _target_: composablenav.train.train_utils.ddpo_process_batch
+      _partial_: true
+
+      # args
+      max_padded_len: ${dataloader.max_padded_len}
+      input_dim: ${model.nn_model.input_dim}
+
+    # configs
+    inner_loop_epochs: 1
+    lr: 1e-6
+    epislon_clip: true
+    log_at_steps: 10
+
+    use_kl: false
+    kl_beta: 0.01
+    
+    min_count_advantage_normalization: 16
+    advantage_deque_length: 64
+
+    grid_size: ${dataset.env.grid_size}
+    env_dt: ${dataset.env.env_dt}
+
+

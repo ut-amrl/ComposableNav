@@ -1,0 +1,15 @@
+# @package _global_
+
+defaults:
+    - /model/base_vit
+
+model:
+    _target_: composablenav.models.diffusion.GaussianDiffusionPPO
+    nn_model:
+        dropout: 0.
+        context:
+            vit_args:
+                dropout: 0.
+                emb_dropout: 0.
+    config:
+        do_compile: ${compile}
