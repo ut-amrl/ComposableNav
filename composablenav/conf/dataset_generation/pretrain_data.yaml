@@ -1,0 +1,27 @@
+defaults:
+  - base
+
+env:
+  dynamic_obstacle:
+    max_num_obstacles: 10
+    min_num_obstacles: 1
+  static_obstacle:
+    min_num_obstacles: 1
+    max_num_obstacles: 6
+
+scenarios: 
+  scenario: pretrain
+  save_name: pretrain
+
+generation:
+  num_dynamic: 1 # 2M data
+  num_avoid: 1 # 2M data
+  num_prefer: 1 # 2M data
+  num_plans: 2
+  num_goals: 2
+  max_expand_node_num: 10000 # hybrid astar
+  min_subgoals: 0 # rrt
+  max_subgoals: 3 # rrt
+  rrt_paths: 1 # rrt
+  num_proc: -1
+  split_train_percentage: 0.95
