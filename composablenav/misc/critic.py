@@ -2,11 +2,11 @@ import numpy as np
 from composablenav.misc.common import find_first_waypoint_within_radius, validate_plan
 
 # General success criteria
-def collision_criteria(path, goal, goal_radius, obstacles, dt, **kwargs) -> bool:
+def collision_criteria(path, goal, goal_radius, obstacles, dt, start_time_idx=0, **kwargs) -> bool:
     first_waypoint_idx = find_first_waypoint_within_radius(path, goal, goal_radius)
     if first_waypoint_idx != -1:
         path = path[:first_waypoint_idx+1]
-    valid_plan = validate_plan(path, obstacles, dt)
+    valid_plan = validate_plan(path, obstacles, dt, start_time_idx)
     return valid_plan
 
 def goal_reaching_criteria(path, goal, goal_radius, **kwargs) -> bool:
@@ -37,7 +37,7 @@ def yield_frontal_boolean_criteria(path, obstacles: list, dt: float, obstacle_wi
     return yield_frontal_criteria(path, obstacles, dt, obstacle_width, 
                           obstacle_front_min_dist, obstacle_front_max_dist) == 1
 
-def walk_over_region_percent_boolean_criteria(path, obstacles, dt, percentage, **kwargs):
+def walk_over_region_percent(path, obstacles, dt, **kwargs):
     assert len(obstacles) == 1
     obstacle = obstacles[0]
     height = obstacle.top - obstacle.bottom
@@ -58,9 +58,11 @@ def walk_over_region_percent_boolean_criteria(path, obstacles, dt, percentage, *
             curr_pos = None
     covered_length = 0
     for start, end in covered_pos:
-        covered_length += end - start
-    
-    return bool(covered_length / height >= percentage)
+        covered_length += end - start   
+    return covered_length / height
+
+def walk_over_region_percent_boolean_criteria(path, obstacles, dt, percentage, **kwargs):
+    return bool(walk_over_region_percent(path, obstacles, dt) >= percentage)
 
 def avoid_region_boolean_criteria(path, obstacles, dt, **kwargs):
     x, y = path[-1][0], path[-1][1]
@@ -210,7 +212,30 @@ def overtake_reward(path, obstacles, goal, dt: float, goal_radius:float, overtak
     if direction == overtake_direction:
         return 1 + cost
     return 0 + cost
-                
+
+def overtake_reward_random_start(path, obstacles, goal, dt: float, goal_radius:float, overtake_direction: str):
+    # for PPO, return 1 if path is better, 0 otherwise
+    assert overtake_direction in ["left", "right"]
+    no_collision = collision_criteria(path, goal, goal_radius, obstacles, dt)
+    if not no_collision:
+        return -1
+    direction = overtake_direction_criteria(path, obstacles, dt)
+    cost = stay_in_centerline_criteria(path, obstacles, dt)
+    cost = 0 # V3: remove cost
+    # stay in the center line of the obstacle
+    if False:
+        valid_offset = 0 # V1-3
+    elif True:
+        valid_offset = 1 # V4
+    # temp random start location: maybe removed later
+    obs_x, obs_y, _ = obstacles[0].pos_at_dt(0)
+    robot_x, robot_y = path[0][0], path[0][1]
+    if robot_x > obs_x - valid_offset:
+        return 1 + cost
+    # temp random start location: maybe removed later
+    if direction == overtake_direction:
+        return 1 + cost
+    return 0 + cost  
 ## -------------------------------------------------------------- ##
 ## ------------------ Critic Functions: Follow ------------------ ##
 ## -------------------------------------------------------------- ##
@@ -332,10 +357,12 @@ def follow_criteria_for_training(path, obstacles: list, dt: float, follow_width:
         t = idx * dt
         x, y = step[0], step[1]
         obs_x, obs_y, obs_yaw = obstacle.pos_at_dt(t)
+        if abs(y - obs_y) > 0.5 or x > obs_x - 0.5:
+            continue
         distance = np.sqrt((x - (obs_x - follow_dist))**2 + (y - obs_y)**2)
         rewards += max(0, 5 - distance)
     
-    rewards /= len(path)
+    # rewards /= len(path)
     return rewards
 
 def follow_criteria_for_training_old(path, obstacles: list, dt: float, follow_width: float, 
@@ -404,6 +431,7 @@ def follow_reward(path, obstacles, goal, dt: float, goal_radius:float,
     
     # for PPO, use number of follow steps as rewards
     follow_steps = follow_criteria_for_training(path, obstacles, dt, follow_width, follow_min_dist, follow_max_dist)
+    # follow_steps = follow_criteria_legacy(path, obstacles, dt, follow_width, follow_min_dist, follow_max_dist)
     return follow_steps
 
 
@@ -462,6 +490,31 @@ def terrain_reward(path, obstacles, goal, dt: float, goal_radius:float, do_avoid
         return -1 
     
     return terrain_reward + reached_goal
+
+def avoid_region_reward(path, obstacles, goal, dt: float, goal_radius:float):
+    first_waypoint_idx = find_first_waypoint_within_radius(path, goal, goal_radius)
+    if first_waypoint_idx != -1:
+        path = path[:first_waypoint_idx+1]
+    reached_goal = goal_reaching_criteria(path, goal, goal_radius)
+    no_collision = collision_criteria(path, goal, goal_radius, obstacles, dt)
+    if not no_collision:
+        return -1 
+    if not reached_goal:
+        return -1 
+    return 1
+
+def prefer_region_reward(path, obstacles, goal, dt: float, goal_radius:float):
+    first_waypoint_idx = find_first_waypoint_within_radius(path, goal, goal_radius)
+    if first_waypoint_idx != -1:
+        path = path[:first_waypoint_idx+1]
+    reached_goal = goal_reaching_criteria(path, goal, goal_radius)
+    
+    if not reached_goal:
+        return 0
+    prefer_reward = walk_over_region_percent(path, obstacles, dt)
+    
+    return prefer_reward
+    
 
 ## ---------------------------------------------------- ##
 ## ----------------- Compare Functions ---------------- ##

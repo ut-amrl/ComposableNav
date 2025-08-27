@@ -1,0 +1,34 @@
+optim:
+  optimizer: AdamW
+  lr: 2e-4
+  scheduler:
+    mode: min
+    factor: 0.5
+    patience: 5
+    verbose: True
+    min_lr: 1e-4
+    monitor: 'train_loss'
+  ema:
+    use_ema: True 
+    beta: 0.995
+    step_start_ema: 200
+
+trainer:
+  trainer_model_name: DiffusionTrainerModel
+  max_epochs: 1000
+  precision: 16-mixed
+  strategy: ddp
+  accelerator: auto
+  gradient_clip_val: 1.0
+  devices: 1
+  check_val_every_n_epoch: 1
+
+callbacks:
+  checkpoint: 
+    save_top_k: -1
+    every_n_epochs: 1
+    monitor: val_loss_ema
+    dirpath: checkpoints/
+    mode: max
+
+

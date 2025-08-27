@@ -128,8 +128,6 @@ def create_meta_file(cfg, saved_data_folder, verbose=True):
 def main(cfg: DictConfig):
     
     cfg = cfg.dataset_generation
-    create_meta_file(cfg, "../generated_data/pretrain_2025_08_22_16_07")
-    exit()
     num_dynamic = cfg.generation.num_dynamic
     num_avoid = cfg.generation.num_avoid
     num_prefer = cfg.generation.num_prefer

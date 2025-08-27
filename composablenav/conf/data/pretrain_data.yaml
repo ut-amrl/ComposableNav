@@ -1,0 +1,11 @@
+dataset_args:
+  fn_or_data: "meta_file" 
+  max_padded_len: 128 
+  max_obj_traj_len: 384 # 128 * 3
+  max_padded_obj_num: 10
+  max_padded_terrain_num: 10
+
+train_split_ratio: 0.98
+dataset_name: XYTrajectoryDataset
+batch_size: 2048 # 8192 effective
+data_path: ${data_path}

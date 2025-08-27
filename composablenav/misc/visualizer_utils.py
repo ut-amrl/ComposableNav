@@ -201,7 +201,8 @@ def visualize_diffusion(model, fn, x_shape, idx, sample_fn, context_cond, state_
                save_name=save_name, frame_size=frame_size)
     return chain
 
-def visualize_paths_with_rewards(paths, rewards, obstacles_list, goal_pos, goal_radius, grid_size, dt, save_name, frame_size=(640, 480)):
+def visualize_paths_with_rewards(paths, rewards, obstacles_list, goal_pos, goal_radius, grid_size, dt, save_name, 
+                                 start_time_idx=0, frame_size=(640, 480)):
     """
     paths: B x N x 2 (unnormalized)
     rewards: B (unnormalized)
@@ -222,7 +223,7 @@ def visualize_paths_with_rewards(paths, rewards, obstacles_list, goal_pos, goal_
     cmap = plt.get_cmap('viridis')
     cmap_bar_set = False
     
-    t = 0
+    t = start_time_idx * dt
     while True:
         ax.clear()
         

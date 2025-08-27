@@ -27,9 +27,6 @@ def follow_obstacle(cfg: DictConfig):
                             scale=cfg.dynamic_obstacle.noise_std, 
                             size=cfg.dynamic_obstacle.noise_size)
 
-    # TODO: Noisy is not used need to change to dict
-    obstacle = CircleNoisy(random_x, random_y, theta, speed, 
-                        planning_dt=cfg.env_dt, noise=noise, radius=cfg.dynamic_obstacle.obstacle_radius)
     return [obstacle]
 
 def overtake_obstacle(cfg: DictConfig):
