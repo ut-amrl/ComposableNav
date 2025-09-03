@@ -1,0 +1,12 @@
+# for ddpo finetuning
+defaults:
+    - base_vit
+
+unet:
+    dropout: 0.
+context:
+    vit_args:
+        dropout: 0.
+        emb_dropout: 0.
+
+compile: true

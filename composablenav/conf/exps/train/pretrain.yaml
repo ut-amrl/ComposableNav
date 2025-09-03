@@ -4,10 +4,11 @@ experiment_name: ???
 data_path: ??? 
 
 defaults:
-  - /dataset_generation/base
   - /data/pretrain_data
-  - /train/diffusion_ema
+  - /dataset_generation/base
+  - /inference/base
   - /model/base_vit
+  - /train/diffusion_ema
 
 train:
   callbacks:

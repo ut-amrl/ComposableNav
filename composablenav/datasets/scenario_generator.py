@@ -26,7 +26,8 @@ def follow_obstacle(cfg: DictConfig):
     noise = np.random.normal(loc=cfg.dynamic_obstacle.noise_mean, 
                             scale=cfg.dynamic_obstacle.noise_std, 
                             size=cfg.dynamic_obstacle.noise_size)
-
+    
+    obstacle = Circle(random_x, random_y, theta, speed, radius=cfg.dynamic_obstacle.obstacle_radius)
     return [obstacle]
 
 def overtake_obstacle(cfg: DictConfig):

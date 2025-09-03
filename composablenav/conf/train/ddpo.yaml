@@ -1,0 +1,15 @@
+optim:
+  lr: 1e-6 # used to be 2e-4 which will cause the network to diverge
+
+num_episodes: 200
+inner_loop_mini_batch_size: 8
+inner_loop_epochs: 1
+epislon_clip: 1e-4
+num_rollout: 32
+save_at_epochs: 10
+log_at_steps: 1
+use_kl: False
+kl_beta: 0.01
+
+diffusion_checkpoints: ???
+

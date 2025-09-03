@@ -1,0 +1,7 @@
+success_criteria:
+  collision_criteria: 
+    base_exp:
+      goal_radius: 2
+  goal_reaching_criteria: 
+    base_exp:
+      goal_radius: 2

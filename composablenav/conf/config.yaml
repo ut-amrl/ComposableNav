@@ -1,6 +1,2 @@
 defaults:
-  - model: base_vit_context_no_inst
-  - train: diffusion_ema 
-  - data: base
   - log: wandb
-  - inference: base

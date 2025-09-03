@@ -11,14 +11,14 @@ from functools import partial
 from omegaconf import DictConfig, OmegaConf
 
 from composablenav.misc import critic
-from composablenav.datasets.environment_2d.scenario_generator import gen_noncolliding_obstacles, gen_regions, gen_goal
+from composablenav.datasets.scenario_generator import gen_noncolliding_obstacles, gen_regions, gen_goal
 from composablenav.misc.normalizers import PathNormalizer
 from composablenav.misc.process_data import construct_normalized_obstacle_seq, construct_normalized_static_obstacle_from_obj
 from composablenav.misc.visualizer_utils import visualize_paths_with_rewards
-from composablenav.misc.common import construct_obstacle_from_info, find_first_waypoint_within_radius, add_noise_observation
+from composablenav.misc.common import construct_obstacle_from_info, find_first_waypoint_within_radius
 from composablenav.models.diffusion_components import diffusion_sample_fn_log_prob
 from composablenav.train.dataloader_base import ProcessObsHelper
-from composablenav.datasets.environment_2d.obstacles import Rectangle
+from composablenav.datasets.obstacles import Rectangle
 from collections import deque
 
 class SuccessEvaluator:
@@ -171,50 +171,6 @@ class Maze2DEnv:
     
     def create_obstacle_info(self, obstacle_list):
         start_loc = self.cfg.objective.start_loc
-        if self.cfg.objective.random_start:
-            # recreate new obstacle list
-            t = np.random.uniform(0, 6) # random 0-6s
-
-            for obs in obstacle_list:
-                x,y,theta = obs.pos_at_dt(t)
-                setattr(obs, "x", x)
-                setattr(obs, "y", y)
-                setattr(obs, "theta", theta)
-            not_valid = True
-            if False:
-                # V1 and V3
-                while not_valid:
-                    not_valid = False
-                    robot_x = np.random.uniform(-10, 0)
-                    robot_y = np.random.uniform(-5, 5)
-                    for obs in obstacle_list:
-                        if obs.collision(robot_x,robot_y, robot_x, robot_y, 0, buffer=0.2):
-                            not_valid = True 
-            elif False:
-                # V2
-                while not_valid:
-                    not_valid = False
-                    robot_x = np.random.uniform(-10, x-1) # all x are valid
-                    robot_y = np.random.uniform(-5, 5)
-                    for obs in obstacle_list:
-                        if obs.collision(robot_x,robot_y, robot_x, robot_y, 0, buffer=0.2):
-                            not_valid = True 
-            elif True:
-                # V4
-                while not_valid:
-                    not_valid = False
-                    epislon = 0.2 # 80% valid region and 20% invalid region
-                    valid_region_offset = 1
-                    if np.random.uniform() < epislon:
-                        robot_x = np.random.uniform(x-valid_region_offset, 0)
-                        robot_y = np.random.uniform(-5, 5)
-                    else:
-                        robot_x = np.random.uniform(-10, x-valid_region_offset)
-                        robot_y = np.random.uniform(-5, 5)
-                    for obs in obstacle_list:
-                        if obs.collision(robot_x,robot_y, robot_x, robot_y, 0, buffer=0.2):
-                            not_valid = True 
-            start_loc = [robot_x, robot_y]
                 
         return [obstacle.to_dict() for obstacle in obstacle_list], start_loc
     
@@ -225,6 +181,9 @@ class Maze2DEnv:
             prefer_region_list = []
         elif self.cfg.scenarios.scenario == "prefer":
             prefer_region_list = gen_regions(self.cfg)
+            avoid_region_list = []
+        else:
+            prefer_region_list = []
             avoid_region_list = []
         goal_loc = gen_goal(self.cfg, obstacle_list, prefer_region_list, scenario=self.cfg.scenarios.scenario)
         goal_radius = self.cfg.objective.goal_radius
