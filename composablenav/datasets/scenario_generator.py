@@ -17,15 +17,11 @@ def random_obstacle(cfg: DictConfig):
     return [obstacle]
 
 def follow_obstacle(cfg: DictConfig):
-    random_x = np.random.uniform(-8, 0)
-    random_y = np.random.uniform(-5, 5)
+    random_x = np.random.uniform(-8, -5)
+    random_y = np.random.uniform(-3, 3)
     
     theta = 0
-    speed = np.random.uniform(0.6, 1.3)
-
-    noise = np.random.normal(loc=cfg.dynamic_obstacle.noise_mean, 
-                            scale=cfg.dynamic_obstacle.noise_std, 
-                            size=cfg.dynamic_obstacle.noise_size)
+    speed = np.random.uniform(0.5, 1.0)
     
     obstacle = Circle(random_x, random_y, theta, speed, radius=cfg.dynamic_obstacle.obstacle_radius)
     return [obstacle]
@@ -323,15 +319,10 @@ def overtake2_goal(cfg: DictConfig, obstacle_list):
     return 15, goal_y
 
 def follow_goal(cfg: DictConfig, obstacle_list):
-    return overtake_follow_goal(cfg, obstacle_list)
     # Changed
     assert len(obstacle_list) == 1
     obstacle = obstacle_list[0]
     goal_x = 10
-    # goal_y = np.random.uniform(-1, 1)
-    # goal_y = np.random.uniform(obstacle.y - 2 if obstacle.y - 2 > -cfg.env.grid_size else -cfg.env.grid_size, 
-    #                            obstacle.y + 2 if obstacle.y + 2 < cfg.env.grid_size else cfg.env.grid_size)
-    
     goal_y = np.random.uniform(obstacle.y - 1 if obstacle.y - 1 > -cfg.env.grid_size / 1 else -cfg.env.grid_size / 1, 
                                obstacle.y + 1 if obstacle.y + 1 < cfg.env.grid_size / 1 else cfg.env.grid_size / 1)
     return goal_x, goal_y

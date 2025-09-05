@@ -6,9 +6,7 @@ env:
     max_num_obstacles: 1
     min_num_obstacles: 1
     obstacle_radius: 1
-    noise_mean: 0 
-    noise_std: 0.2
 
 scenarios: 
-  scenario: follow
-  save_name: follow
+  scenario: overtake
+  save_name: overtake

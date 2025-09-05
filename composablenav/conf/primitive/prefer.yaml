@@ -1,0 +1,14 @@
+defaults:
+  - base 
+
+overtake_criteria_params: &overtake_criteria_params
+  goal_radius: 2
+
+scenario: 
+  scenario_name: Overtake Senario
+  criteria:
+    criteria_fn: prefer_region_reward
+    criteria_params:
+      <<: *overtake_criteria_params
+
+success_criteria: {}

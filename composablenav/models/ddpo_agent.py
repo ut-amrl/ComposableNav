@@ -24,7 +24,7 @@ from collections import deque
 class SuccessEvaluator:
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
-        self.success_criteria = self.cfg.inference.success_criteria
+        self.success_criteria = self.cfg.primitive.success_criteria
         dt = self.cfg.dataset_generation.env.env_dt
 
         self.criteria_fns = {}

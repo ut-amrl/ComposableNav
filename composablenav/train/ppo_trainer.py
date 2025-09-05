@@ -15,7 +15,7 @@ def initailize_DDPO_env_agent(cfg: DictConfig):
     diffusion_model = load_model(cfg, model_path=cfg.train.diffusion_checkpoints, device=DEVICE, load_ddpo=True) 
     diffusion_model.train() # set it to be training model
     evaluator_model = SuccessEvaluator(cfg)
-    reward_model = RewardModel(cfg.dataset_generation, cfg.inference.scenario)
+    reward_model = RewardModel(cfg.dataset_generation, cfg.primitive.scenario)
     replay_buffer = ReplayBuffer(batch_size=cfg.train.inner_loop_mini_batch_size, device=DEVICE)
     agent = DDPOAgent(cfg, diffusion_model, reward_model, replay_buffer, evaluator_model, cfg.train.log_at_steps, 
                       cfg.train.inner_loop_epochs, cfg.train.epislon_clip, cfg.train.optim.lr, 

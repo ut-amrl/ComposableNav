@@ -1,0 +1,12 @@
+defaults:
+  - base
+
+env:
+  dynamic_obstacle:
+    max_num_obstacles: 1
+    min_num_obstacles: 1
+    obstacle_radius: 1
+
+scenarios: 
+  scenario: yield
+  save_name: yield

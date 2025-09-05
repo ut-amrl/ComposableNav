@@ -1,0 +1,11 @@
+defaults:
+  - base
+
+env:
+  static_obstacle:
+    min_num_obstacles: 1
+    max_num_obstacles: 1
+
+scenarios: 
+  scenario: prefer
+  save_name: prefer

@@ -357,10 +357,10 @@ def follow_criteria_for_training(path, obstacles: list, dt: float, follow_width:
         t = idx * dt
         x, y = step[0], step[1]
         obs_x, obs_y, obs_yaw = obstacle.pos_at_dt(t)
-        if abs(y - obs_y) > 0.5 or x > obs_x - 0.5:
-            continue
+        # if abs(y - obs_y) > 0.5 or x > obs_x - 0.5:
+        #     continue
         distance = np.sqrt((x - (obs_x - follow_dist))**2 + (y - obs_y)**2)
-        rewards += max(0, 5 - distance)
+        rewards += max(0, radius - distance)
     
     # rewards /= len(path)
     return rewards
@@ -430,7 +430,7 @@ def follow_reward(path, obstacles, goal, dt: float, goal_radius:float,
         return -1
     
     # for PPO, use number of follow steps as rewards
-    follow_steps = follow_criteria_for_training(path, obstacles, dt, follow_width, follow_min_dist, follow_max_dist)
+    follow_steps = follow_criteria_for_training_old(path, obstacles, dt, follow_width, follow_min_dist, follow_max_dist)
     # follow_steps = follow_criteria_legacy(path, obstacles, dt, follow_width, follow_min_dist, follow_max_dist)
     return follow_steps
 

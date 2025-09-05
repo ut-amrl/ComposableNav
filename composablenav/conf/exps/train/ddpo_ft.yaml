@@ -4,11 +4,10 @@ checkpoint: ???
 experiment_name: ???
 
 defaults:
-  - /data/ft_data
-  - /dataset_generation/ft_follow
-  - /inference/ddpo_follow
-  - /model/base_vit_no_dropout
-  - /train/ddpo
+  - /data: ft_data
+  - /dataset_generation: ${primitive}
+  - /model: base_vit_no_dropout
+  - /train: ddpo
 
 train:
   num_episodes: 1000
