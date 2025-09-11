@@ -1,0 +1,55 @@
+<div class="swiper my-realworld-slider py-2" >
+  <div class="swiper-wrapper">
+
+    <div class="swiper-slide">
+      {% include_relative _layouts/real_world_demos/composed.html %}
+    </div>
+
+    <div class="swiper-slide">
+      {% include_relative _layouts/real_world_demos/customize_navigation.html %}
+    </div>
+
+    <div class="swiper-slide">
+      {% include_relative _layouts/real_world_demos/mpc.html %}
+    </div>
+
+    <div class="swiper-slide">
+
+    </div>
+  </div>
+
+  <!-- arrows + dots -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+  <div class="swiper-pagination"></div>
+</div>
+
+<script>
+  new Swiper('.my-realworld-slider', {
+    loop: true,
+    spaceBetween: 16,           // gap between cards (px)
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+    pagination: { el: '.swiper-pagination', clickable: true },
+    slidesPerView: 1,           // phones
+  });
+</script>
+
+<style>
+  .my-realworld-slider { position: relative; }
+  .my-realworld-slider .swiper-button-prev,
+  .my-realworld-slider .swiper-button-next{
+    color:#000;
+    top:50%;
+    /* transform:translateY(-200%); */
+    z-index:9999;          /* be above images/etc */
+    pointer-events:auto;   /* clickable even if overlapped */
+  }
+  .my-realworld-slider .swiper-button-prev{ left:8px; }
+  .my-realworld-slider .swiper-button-next{ right:8px; }
+
+  /* optional */
+  .my-realworld-slider img{ max-height:260px; object-fit:contain; }
+</style>

@@ -1,0 +1,122 @@
+<style>
+  /* big rounded panel */
+  .info-panel {
+    background: #fdf6e3;          /* soft cream */
+    border: 2px solid #ddd;
+    border-radius: 28px;
+    padding: 3rem 2rem;
+    color: #333;
+    min-height: 340px;
+    position: relative;
+  }
+
+  /* make tabs float over the panel edge */
+  .tab-wrap { position: relative; margin-top: 1rem; }
+  .tab-wrap .nav-tabs { border-bottom: 0; gap: .5rem; }
+  .tab-wrap .nav-link {
+    border: 0;
+    font-weight: 600;
+    border-radius: 10px 10px 6px 6px;
+    padding: .5rem 1rem;
+    box-shadow: 0 2px 3px rgba(0,0,0,.15);
+    color: #fff;
+  }
+
+  /* pastel tab colors */
+  .tab-1 { background:#a5d8ff; }  /* light blue */
+  .tab-2 { background:#b2f2bb; }  /* light green */
+  .tab-3 { background:#ffc9c9; }  /* light red/pink */
+
+  .tab-wrap .nav-link.active { filter: brightness(1.08); }
+
+  /* tuck tabs into panel */
+  .tab-wrap .nav-tabs {
+    margin-left: 2rem;
+    z-index: 2;
+    position: relative;
+  }
+  .info-panel { margin-top: -12px; }
+</style>
+
+<style>
+  .arrow-right { 
+    width: 36px; 
+    height: 36px; 
+    color: #6c757d; 
+    vertical-align: middle;
+    transform: rotate(-90deg);
+    transform-box: fill-box;      /* ensure the transform uses the SVG box */
+    transform-origin: center;     /* rotate around center */
+  }
+</style>
+
+
+<div class="tab-wrap">
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="demoTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link tab-1 active" id="tab1-tab"
+              data-bs-toggle="tab" data-bs-target="#tab1"
+              type="button" role="tab" aria-controls="tab1" aria-selected="true">
+        0. Data Generation
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link tab-2" id="tab2-tab"
+              data-bs-toggle="tab" data-bs-target="#tab2"
+              type="button" role="tab" aria-controls="tab2" aria-selected="false">
+        1. Supervised Pre-training
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link tab-3" id="tab3-tab"
+              data-bs-toggle="tab" data-bs-target="#tab3"
+              type="button" role="tab" aria-controls="tab3" aria-selected="false">
+        2. RL Fine-tuning
+      </button>
+    </li>
+  </ul>
+
+  <!-- Panel + tab panes -->
+  <div class="info-panel">
+    <div class="tab-content" id="demoTabsContent">
+      <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <p>
+          We randomly generate environments with different agents, terrains, and goal locations. Then using an RRT + Hybrid A* planner, we create diverse, smooth, collision-free trajectories — and save them as training data for supervised pre-training of the base diffusion model.
+        </p>
+        <div class="row">
+            <div class="col col-md-4 text-center">
+                <img src="assets/images/pretrain_data_environment.gif" alt="">
+                <strong>Randomly Generated Environment With Dynamic Agents</strong>
+            </div>
+            <div class="col col-md-4 d-flex flex-column justify-content-center align-items-center text-center">   
+                <svg class="arrow-right" viewBox="0 0 24 24" 
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                    aria-hidden="true"
+                    style="width: 60px; height: 60px;">  <!-- make arrow bigger -->
+                    <path d="M12 3v14"></path>
+                    <path d="M6 13l6 8 6-8"></path>
+                </svg>
+                <span class="mt-2">Plan Robot Trajectories Via RRT + Hybrid A*</span>
+            </div>
+            <div class="col col-md-4 text-center">
+                <img src="assets/images/pretrain_data_trajectories.gif" alt="">
+                <strong>Diverse Collision-Free Goal-reaching Trajectories</strong>
+            </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        <video autoplay loop muted playsinline controls preload="metadata">
+          <source src="assets/videos/ComposableNav_Pretraining.mp4" type="video/mp4"></source>
+        </video>
+      </div>
+      <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+        <p class="mb-0">Give a random environment, show 2 generations, show 2 critics (one good and one wrong)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
