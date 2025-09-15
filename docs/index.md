@@ -21,30 +21,34 @@ pre code {
   white-space: pre-wrap;     /* wrap instead of scrolling */
   word-break: break-word;    /* break long words/URLs */
 }
+.label-box {
+  height: 60px;   /* 👈 fixed height for all labels */
+  overflow-y: auto;
+  line-height: 1.1;   /* smaller = tighter lines */
+}
 </style>
 
 
 
 <div class="text-center">
-  <a type="button" class="btn btn-link" style="margin: 5pt 20pt 30pt 20pt; height:40px;" href="https://github.com/ut-amrl/robo-instruct">
+  <a type="button" class="btn btn-link" style="margin: 5pt 20pt 30pt 20pt; height:40px;" href="https://github.com/ut-amrl/ComposableNav">
     <h5>
       <img src="assets/images/github.png" style="height:30px;"/> Code
     </h5>
   </a>
 
-  <a role="button" class="btn btn-link" style="margin: 5pt 20pt 30pt 20pt; height:40px;" href="https://arxiv.org/abs/2405.20179">
+  <a role="button" class="btn btn-link" style="margin: 5pt 20pt 30pt 20pt; height:40px;" href="https://www.cs.utexas.edu/~pstone/Papers/bib2html-links/zichao_hu_corl2025.pdf">
     <h5>
       <img src="assets/images/document_icon.png" style="height:30px;"/> Paper
     </h5>
   </a>
 
-  <a role="button" class="btn btn-link" style="margin: 5pt 20pt 30pt 20pt; height:40px;" href="https://huggingface.co/collections/zichao22/robo-instruct-666089a7338b72a3275f9e69">
+  <a role="button" class="btn btn-link" style="margin: 5pt 20pt 30pt 20pt; height:40px;" href="https://huggingface.co/zichao22/ComposableNav_Models/tree/main">
     <h5>
-      <img src="assets/images/huggingface.png" style="height:30px;"/> Models
+      <img src="assets/images/huggingface.png" style="height:30px;"/> Model Checkpoints
     </h5>
   </a>
 </div>
-
 
 <div class="text-center">
   <img src="assets/images/first_figure.png" alt="composablenav illustration">
@@ -55,6 +59,7 @@ the composability of diffusion models (b) to compose motion primitives to genera
 <hr>
 
 # Abstract
+
 This paper considers the problem of enabling robots to navigate dynamic environments while following instructions. The challenge lies in the combinatorial nature of instruction specifications: each instruction can include multiple specifications, and the number of possible specification combinations grows exponentially as the robot’s skill set expands. For example, “pass_from the pedestrian while staying on the right side of the road” consists of two specifications: “pass_from the pedestrian” and “walk on the right side of the road.” To tackle this challenge, we propose ComposableNav, based on the intuition that following an instruction involves independently satisfying its constituent specifications, each corresponding to a distinct motion primitive. Using diffusion models, ComposableNav learns each primitive separately, then composes them in parallel at deployment time to satisfy novel combinations of specifications unseen in training. Additionally, to avoid the onerous need for demonstrations of individual motion primitives, we propose a two-stage training procedure: (1) supervised pre-training to learn a base diffusion model for dynamic navigation, and (2) reinforcement learning fine-tuning that molds the base model into different motion primitives. Through simulation and real-world experiments, we show that ComposableNav enables robots to follow instructions by generating trajectories that satisfy diverse and unseen combinations of specifications, significantly outperforming both noncompositional VLM-based policies and costmap composing baselines. 
 
 <hr>
@@ -73,16 +78,18 @@ ComposableNav is a diffusion-based planner for instruction-following navigation.
 {% include_relative _layouts/training_descriptions.html %}
 
 
-## Deployment
-<!-- <video autoplay loop muted playsinline controls preload="metadata">
-  <source src="assets/videos/ComposableNav_Pretraining.mp4" type="video/mp4"></source>
-</video> -->
+## Deployment Illustration
+<video autoplay loop muted playsinline controls preload="metadata">
+  <source src="assets/videos/deployment_illustration.mp4" type="video/mp4"></source>
+</video>
 
 <hr>
 
-# Experiments
-We conduct
-## Primitives
+<div style="background-color: #f5f5f5; padding: 1em 20px 20px 20px">
+<!-- padding-left:20px; padding-right:20px; padding-bottom:20px; padding-top:2em -->
+<h1>Simulation Demonstrations</h1>
+
+<h2>Primitives</h2>
 {% include_relative _layouts/simulation_primitives.html %}
 
 <!-- <div class="row">
@@ -112,35 +119,16 @@ We conduct
     </div>
 </div> -->
 
-## Simulation Demonstrations
+<h2>Composed Results</h2>
 
 {% include_relative _layouts/simulation_compositions.html %}
 
-<!-- <div class="row">
-    <div class="col col-md-3 text-center">
-        <strong>Pass From Left</strong>
-        <img src="assets/images/composed/pass_yield.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col col-md-3 text-center">   
-        <strong>Pass From Right</strong>
-        <img src="assets/images/composed/pass_follow_yield.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col col-md-3 text-center">
-        <strong>Follow</strong>
-        <img src="assets/images/composed/yield_pass_prefer.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col col-md-3 text-center">
-        <strong>Yield</strong>
-        <img src="assets/images/composed/avoid_follow_walk_over.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
+
 </div>
 
+<hr>
 
-## Test -->
-
-
-
-## Real World Deployments
+# Real World Demonstrations
 
 {% include_relative _layouts/realworld.html %}
 

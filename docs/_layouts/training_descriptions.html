@@ -16,6 +16,17 @@
 }
 </style>
 
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
+  svg: {fontCache: 'global'}
+};
+</script>
+<script async id="MathJax-script"
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
 <!-- Tabs -->
 <ul class="nav nav-tabs" id="demoTabs" role="tablist">
   <li class="nav-item">
@@ -71,12 +82,24 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+    <p style="padding-left: 50px; padding-right: 50px;">
+    From the collision-free robot trajectory dataset, the model learns a conditional
+    denoising network $f^{\text{base}}_{\theta}(\tau_t, t, \mathcal O)$, which predicts the
+    noise $\epsilon$ to denoise the trajectory $\tau_t$ at step $t$, conditioned on
+    environment observations $\mathcal O$.
+    </p>
+       
       <video autoplay loop muted playsinline controls preload="metadata">
-          <source src="assets/videos/gdc_avoid1.mp4" type="video/mp4"></source>
+          <source src="assets/videos/pretraining_demo.mp4" type="video/mp4"></source>
       </video>
     </div>
     <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
       <!-- your tab3 content -->
+      <p style="padding-left: 50px; padding-right: 50px;">
+    We fine-tune the base model separately for each motion primitive using RL,
+following the DDPO approach.
+    </p>
+      
     </div>
   </div>
 </div>
