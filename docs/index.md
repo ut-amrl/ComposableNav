@@ -89,7 +89,7 @@ ComposableNav is a diffusion-based planner for instruction-following navigation.
 <!-- padding-left:20px; padding-right:20px; padding-bottom:20px; padding-top:2em -->
 <h1>Simulation Demonstrations</h1>
 
-<h2>Primitives</h2>
+<h2>Learned Primitives</h2>
 {% include_relative _layouts/simulation_primitives.html %}
 
 <!-- <div class="row">
@@ -119,7 +119,7 @@ ComposableNav is a diffusion-based planner for instruction-following navigation.
     </div>
 </div> -->
 
-<h2>Composed Results</h2>
+<h2>On-the-Fly Composition</h2>
 
 {% include_relative _layouts/simulation_compositions.html %}
 
