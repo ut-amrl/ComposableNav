@@ -1,0 +1,27 @@
+defaults:
+  - base 
+
+follow_criteria_params: &follow_criteria_params
+  follow_width: 0.5
+  follow_min_dist: 1
+  follow_max_dist: 5 # 5, 3
+  goal_radius: 2
+
+scenario: 
+  scenario_name: Follow Scenario
+  criteria:
+    criteria_fn: follow_reward
+    criteria_params:
+      <<: *follow_criteria_params
+
+success_criteria:
+  follow_n_meters_boolean_criteria: 
+    1_meters:
+      n_meters: 1
+      <<: *follow_criteria_params
+    2_meters:
+      n_meters: 2
+      <<: *follow_criteria_params
+    3_meters:
+      n_meters: 3
+      <<: *follow_criteria_params

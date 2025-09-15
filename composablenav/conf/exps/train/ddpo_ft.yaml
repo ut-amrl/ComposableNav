@@ -1,0 +1,15 @@
+# @package _global_
+
+checkpoint: ???
+experiment_name: ???
+
+defaults:
+  - /data: ft_data
+  - /dataset_generation: ${primitive}
+  - /model: base_vit_no_dropout
+  - /train: ddpo
+
+train:
+  num_episodes: 1000
+  save_name: ${experiment_name}
+  diffusion_checkpoints: ${checkpoint}

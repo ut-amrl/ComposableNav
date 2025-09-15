@@ -1,0 +1,66 @@
+env:
+  grid_size: 20
+  grid_resolution: 0.25
+  angle_resolution: 1.57079632679 # 90 deg
+  env_dt: 0.25
+  gen_noncolliding: False
+  gen_noncolliding_time: 64 # not used ful when gen_noncolliding is False
+  dynamic_obstacle:
+    max_num_obstacles: 0
+    min_num_obstacles: 0
+    obstacle_radius: 2
+    obstacle_max_speed: 2
+    noise_mean: 0
+    noise_std: 0
+    noise_size: [128, 3]
+  static_obstacle:
+    min_num_obstacles: 0
+    max_num_obstacles: 0
+    min_x: -8 # updated
+    max_x: 8
+    min_y: -8
+    max_y: 8
+    min_angle: 0
+    max_angle: 0
+    min_width: 1
+    max_width: 10
+    min_height: 1
+    max_height: 10
+    buffer: 1
+
+objective:
+  start_loc: 
+    - -10
+    - 0
+  goal_dist: 8
+  goal_radius: 2
+
+robot:
+  max_v: 2
+  max_w: 1
+  max_dv: 0.5
+  max_dw: 0.5
+  v_partitions: 6
+  w_partitions: 7
+  max_planning_time: 128
+  aggregate_planning_dt: 4
+  target_vel_alpha: 2
+  target_vel_beta: 1
+  time_multiplier: 0.5
+  heuristic_multiplier: 1.5
+
+generation:
+  output_dir: ../generated_data
+  environment_input: None
+  num_scenes: 20000
+  num_plans: 5
+  num_goals: 10
+  max_expand_node_num: 50000 # hybrid astar
+  min_subgoals: 0 # rrt
+  max_subgoals: 3 # rrt
+  rrt_paths: 20 # rrt
+  num_proc: -1
+
+scenarios: 
+  scenario: ???
+  save_name: ???

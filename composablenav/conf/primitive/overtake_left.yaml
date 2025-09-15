@@ -1,0 +1,25 @@
+defaults:
+  - base 
+
+overtake_criteria_params: &overtake_criteria_params
+  overtake_direction: left
+  goal_radius: 2
+
+scenario: 
+  scenario_name: Overtake Senario
+  criteria:
+    criteria_fn: overtake_reward
+    criteria_params:
+      <<: *overtake_criteria_params
+
+success_criteria: {}
+  # overtake_n_seconds_criteria: 
+  #   1_seconds:
+  #     overtake_time: 1
+  #     <<: *overtake_criteria_params
+  #   2_seconds:
+  #     overtake_time: 2
+  #     <<: *overtake_criteria_params
+  #   3_seconds:
+  #     overtake_time: 3
+  #     <<: *overtake_criteria_params

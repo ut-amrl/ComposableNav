@@ -1,0 +1,24 @@
+# @package _global_
+
+experiment_name: ???
+data_path: ??? 
+
+defaults:
+  - /data/pretrain
+  - /dataset_generation/base
+  - /inference/base
+  - /model/base_vit
+  - /train/diffusion_ema
+
+train:
+  callbacks:
+    checkpoint: 
+      dirpath: diffusion_exponential/${experiment_name}/
+      every_n_epochs: 100
+  trainer:
+    check_val_every_n_epoch: 100
+    devices: 8
+    max_epochs: 3000 
+
+log:
+  run_name: ${experiment_name}

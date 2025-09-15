@@ -1,0 +1,118 @@
+<style>
+  .arrow-right { 
+    width: 36px; 
+    height: 36px; 
+    color: #6c757d; 
+    vertical-align: middle;
+    transform: rotate(-90deg);
+    transform-box: fill-box;      /* ensure the transform uses the SVG box */
+    transform-origin: center;     /* rotate around center */
+  }
+  .legend_format{
+    margin-top:80px;
+  }
+/* When stacked (col-12), rotate arrow to point down */
+@media (max-width: 767.98px) {  /* matches Bootstrap's md breakpoint */
+  .arrow-right {
+    transform: rotate(0deg);
+  }
+  .legend_format{
+    margin-top:0px;
+  }
+}
+
+</style>
+
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
+  svg: {fontCache: 'global'}
+};
+</script>
+<script async id="MathJax-script"
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+<!-- Tabs -->
+<ul class="nav nav-tabs" id="demoTabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link tab-1 active" id="tab1-tab"
+       data-toggle="tab" href="#tab1"
+       role="tab" aria-controls="tab1" aria-selected="true">
+      0. Data Generation
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link tab-2" id="tab2-tab"
+       data-toggle="tab" href="#tab2"
+       role="tab" aria-controls="tab2" aria-selected="false">
+      1. Supervised Pre-training
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link tab-3" id="tab3-tab"
+       data-toggle="tab" href="#tab3"
+       role="tab" aria-controls="tab3" aria-selected="false">
+      2. RL Fine-tuning
+    </a>
+  </li>
+</ul>
+
+<!-- Panel + panes -->
+<div class="info-panel" style="background-color: #f5f5f5;">
+  <div class="tab-content" id="demoTabsContent" style="padding:1em">
+    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <p style="padding-left: 50px; padding-right: 50px;">
+          We randomly generate environments with different agents, terrains, and goal locations. Then using an RRT + Hybrid A* planner, we create diverse, smooth, collision-free trajectories — and save them as training data for supervised pre-training of the base diffusion model.
+        </p>
+        <div class="row">
+            <div class="col-12 col-md-4 text-center">
+                <img src="assets/images/pretrain_data_environment.gif" class="img-fluid border border-2 border-dark rounded" alt="">
+                <p><strong>Randomly Generated Environment With Dynamic Agents</strong></p>
+            </div>
+            <div class="col-12 col-md-4 d-flex flex-column justify-content-center align-items-center text-center">   
+                <svg class="arrow-right" viewBox="0 0 24 24" 
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                    aria-hidden="true"
+                    style="width: 60px; height: 60px;">  <!-- make arrow bigger -->
+                    <path d="M12 3v14"></path>
+                    <path d="M6 13l6 8 6-8"></path>
+                </svg>
+                <p class="mt-2">Plan Robot Trajectories Via RRT + Hybrid A*</p>
+                <div class="legend_format">
+                  <img src="assets/images/legends.png" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 text-center">
+                <img src="assets/images/pretrain_data_trajectories.gif" class="img-fluid border border-2 border-dark rounded" alt="">
+                <p><strong>Diverse Collision-Free Goal-reaching Trajectories</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+    <p style="padding-left: 50px; padding-right: 50px;">
+    From the collision-free robot trajectory dataset, the model learns a conditional
+    denoising network $f^{\text{base}}_{\theta}(\tau_t, t, \mathcal O)$, which predicts the
+    noise $\epsilon$ to denoise the trajectory $\tau_t$ at step $t$, conditioned on
+    environment observations $\mathcal O$.
+    </p>
+       
+      <div class="text-center">
+        <video autoplay loop muted playsinline controls preload="metadata">
+            <source src="assets/videos/pretraining_demo.mp4" type="video/mp4"></source>
+        </video>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+      <!-- your tab3 content -->
+      <p style="padding-left: 50px; padding-right: 50px;">
+        We fine-tune the base model for each motion primitive with RL using the DDPO approach. Each primitive is trained in environments containing, where the diffusion model generates trajectories that a critic evaluates to assign rewards.
+      </p>
+      <div class="text-center">
+        <img src="assets/images/rl_finetuning_pipeline.png" class="img-fluid" style="max-height:300px;"  alt="">
+      </div>
+    </div>
+  </div>
+</div>

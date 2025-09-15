@@ -1,0 +1,20 @@
+defaults:
+  - base 
+
+yield_criteria_params: &yield_criteria_params
+  obstacle_width: 1
+  obstacle_front_min_dist: 0.5
+  obstacle_front_max_dist: 4
+  goal_radius: 2
+
+scenario: 
+  scenario_name: Yield Scenario
+  criteria:
+    criteria_fn: yield_reward
+    criteria_params:
+      <<: *yield_criteria_params
+
+success_criteria:
+  yield_criteria: 
+    base_exp:
+      <<: *yield_criteria_params

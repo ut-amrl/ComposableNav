@@ -1,0 +1,67 @@
+unet:
+    input_dim: 2
+    hidden_dim: 64
+    dropout: 0.1
+    dim_head: 32
+    num_heads: 4
+
+diffusion:
+    n_timesteps: 25
+    clipped_denoised: True
+    predict_epsilon: True
+    cond_weight: 1.
+    noise_scheduler: exponential_beta_schedule
+    sampling_fn: diffusion_sample_fn
+    loss_fn: MSELoss
+    loss_fn_args:
+        reduction: none
+    apply_cond_fn: apply_initial_coordinate_cond
+    cfg_args:
+        cfg_drop_prob: 0.2
+        cfg_guide_w: 3
+    use_traj_mask: False
+
+context:
+    # for object centric training
+    context_dim: 256
+    vit_args:
+        output_dim: 256
+        embed_dim: 128
+        dim_head: 128
+        num_heads: 1
+        num_layers: 3 
+        dropout: 0.1
+        emb_dropout: 0.1
+        max_seq_len: 128 # not being used
+    encoders:
+        dynamic_obs_encoder:
+            name: dynamic_obs_encoder
+            model_name: ObstacleMLPEncoder
+            args:
+                input_dim: 384 # 128 x 3
+                hidden_dim: 128
+                output_dim: 128
+        static_obs_encoder:
+            name: static_obs_encoder
+            model_name: StaticObstacleMLPEncoder
+            args: 
+                input_dim: 8
+                hidden_dim: 64
+                output_dim: 128
+                num_octaves: 8
+                norm_factor: 30
+        terrain_encoder:
+            name: terrain_encoder
+            model_name: GoalMLPEncoder
+            args: 
+                input_dim: 5
+                hidden_dim: 64
+                output_dim: 128
+        goal_encoder:
+            name: goal_encoder
+            model_name: GoalMLPEncoder
+            args: 
+                input_dim: 2
+                hidden_dim: 64
+                output_dim: 128
+compile: false

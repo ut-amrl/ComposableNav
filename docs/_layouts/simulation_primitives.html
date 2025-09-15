@@ -1,0 +1,107 @@
+<div class="swiper my-primitive-slider py-2" >
+  <div class="swiper-wrapper">
+
+    <div class="swiper-slide">
+      <div class="text-center">
+        <strong class="adaptive-font">Pass From Left</strong>
+        <img src="assets/images/primitives/primitive_pass_from_left.gif"
+             class="img-fluid border border-2 border-dark rounded" alt="">
+      </div>
+    </div>
+
+    <div class="swiper-slide">
+      <div class="text-center">
+        <strong class="adaptive-font">Pass From Right</strong>
+        <img src="assets/images/primitives/primitive_pass_from_right.gif"
+             class="img-fluid border border-2 border-dark rounded" alt="">
+      </div>
+    </div>
+
+    <div class="swiper-slide">
+      <div class="text-center">
+        <strong class="adaptive-font">Follow</strong>
+        <img src="assets/images/primitives/primitive_follow.gif"
+             class="img-fluid border border-2 border-dark rounded" alt="">
+      </div>
+    </div>
+
+    <div class="swiper-slide">
+      <div class="text-center">
+        <strong class="adaptive-font">Yield</strong>
+        <img src="assets/images/primitives/primitive_yield.gif"
+             class="img-fluid border border-2 border-dark rounded" alt="">
+      </div>
+    </div>
+
+    <div class="swiper-slide">
+      <div class="text-center">
+        <strong class="adaptive-font">Avoid</strong>
+        <img src="assets/images/primitives/primitive_avoid.gif"
+             class="img-fluid border border-2 border-dark rounded" alt="">
+      </div>
+    </div>
+
+    <div class="swiper-slide">
+      <div class="text-center">
+        <strong class="adaptive-font">Walk Over</strong>
+        <img src="assets/images/primitives/primitive_walk_over.gif"
+             class="img-fluid border border-2 border-dark rounded" alt="">
+      </div>
+    </div>
+  </div>
+
+  <!-- arrows + dots -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+  <div class="swiper-pagination"></div>
+</div>
+<div class="text-center" style="max-width: 400px; margin: 0 auto;">
+  <img src="assets/images/legends.png" class="img-fluid" alt="">
+</div>
+
+
+<script>
+  new Swiper('.my-primitive-slider', {
+    loop: true,
+    spaceBetween: 16,           // gap between cards (px)
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+    pagination: { el: '.swiper-pagination', clickable: true },
+    slidesPerView: 1,           // phones
+    breakpoints: {
+      576: { slidesPerView: 3 },// sm (≥576px)
+      992: { 
+            slidesPerView: 6,
+            loop: false,        // disable loop here
+            rewind: true        // allow next to go back to first
+      } // lg+ (≥992px) → like your screenshot
+    }
+  });
+</script>
+
+<style>
+  .my-primitive-slider { position: relative; }
+  .my-primitive-slider .swiper-button-prev,
+  .my-primitive-slider .swiper-button-next{
+    color:#000;
+    top:50%;
+    /* transform:translateY(-200%); */
+    z-index:9999;          /* be above images/etc */
+    pointer-events:auto;   /* clickable even if overlapped */
+  }
+  .my-primitive-slider .swiper-button-prev{ left:8px; }
+  .my-primitive-slider .swiper-button-next{ right:8px; }
+
+  /* optional */
+  .my-primitive-slider img{ max-height:260px; object-fit:contain; }
+</style>
+
+<style>
+.adaptive-font {
+  display: block;
+  font-size: clamp(14px, 1.2vw, 16px); /* scales with screen width */
+  white-space: nowrap;  /* force single line */
+}
+</style>

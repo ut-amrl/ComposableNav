@@ -1,0 +1,18 @@
+defaults:
+  - base 
+
+terrain_criteria_params: &terrain_criteria_params
+  do_avoid: true
+  goal_radius: 2
+
+scenario: 
+  scenario_name: Terrain Scenario
+  criteria:
+    criteria_fn: terrain_reward
+    criteria_params:
+      <<: *terrain_criteria_params
+
+success_criteria:
+  terrain_criteria: 
+    avoid_terrain:
+      <<: *terrain_criteria_params
