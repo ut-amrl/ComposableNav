@@ -1,15 +1,42 @@
-<h2>Demonstration of Adapting to Unpredictable Environments</h2>
-<div class="row" style="margin:20pt">
-    <div class="col col-md-6 text-center">
-        <strong>Avoid the yellow caution cone and the black mat</strong>
-        <video autoplay loop muted playsinline controls preload="metadata">
-          <source src="assets/videos/mpc/elevator_follow_blur.mp4" type="video/mp4"></source>
-        </video>
+<h2 style="margin:10pt;">ComposableNav runs in real time and adapts to unexpected changes.</h2>
+
+<div class="row align-items-stretch" style="margin:0 20pt 20pt 20pt;">
+  <!-- LEFT: video -->
+  <div class="col-12 col-md-6 d-flex p-0">
+    <video class="w-100" style="height:100%; object-fit:cover;" autoplay loop muted playsinline controls preload="metadata">
+      <source src="assets/videos/mpc/doorway_merge_w_unexpected_blur.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- RIGHT: blue block same height as video -->
+  <div class="col-12 col-md-6 d-flex p-0">
+    <div class="w-100 h-100 d-flex flex-column justify-content-center text-center" style="background:#CAEEFB; padding:16px;">
+      <p class="mb-3 text-left">The robot passes through the narrow doorway after the person in the white coat and the one in the black hoodie. When another person approaches from the opposite side, the robot waits for them to pass before continuing its navigation</p>
+      <svg class="arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           style="width:60px; height:60px; margin:0 auto;">
+        <path d="M12 3v14"></path>
+        <path d="M6 13l6 8 6-8"></path>
+      </svg>
     </div>
-    <div class="col col-md-6 text-center">
-        <strong>Steer clear of the group of people chatting ahead</strong>
-        <video autoplay loop muted playsinline controls preload="metadata">
-          <source src="assets/videos/mpc/doorway_merge_w_unexpected_blur.mp4" type="video/mp4"></source>
-        </video>
+  </div>
+
+  <!-- RIGHT: blue block same height as video -->
+  <div class="col-12 col-md-6 d-flex p-0">
+    <div class="w-100 h-100 d-flex flex-column justify-content-center text-center" style="background:#CAEEFB; padding:16px;">
+      <p class="mb-3 text-left">The robot follows the person in the white shirt down the hallway toward the elevator. An unexpected person enters from the right and briefly blocks its path. Near the elevator, the robot waits for the door to open and lets the person enter first, then follows into the elevator.</p>
+      <svg class="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           style="width:60px; height:60px; margin:0 auto;">
+        <path d="M12 3v14"></path>
+        <path d="M6 13l6 8 6-8"></path>
+      </svg>
     </div>
+  </div>
+
+  <div class="col-12 col-md-6 d-flex p-0">
+    <video class="w-100" style="height:100%; object-fit:cover;" autoplay loop muted playsinline controls preload="metadata">
+      <source src="assets/videos/mpc/elevator_follow_blur.mp4" type="video/mp4">
+    </video>
+  </div>
 </div>
