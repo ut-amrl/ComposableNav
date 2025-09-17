@@ -92,33 +92,6 @@ ComposableNav is a diffusion-based planner for instruction-following navigation.
 <h2>Learned Primitives</h2>
 {% include_relative _layouts/simulation_primitives.html %}
 
-<!-- <div class="row">
-    <div class="col-4 col-md-2 text-center">
-        <strong class="adaptive-font">Pass From Left</strong>
-        <img src="assets/images/primitives/primitive_pass_from_left.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col-4 col-md-2 text-center">   
-        <strong class="adaptive-font">Pass From Right</strong>
-        <img src="assets/images/primitives/primitive_pass_from_right.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col-4 col-md-2 text-center">
-        <strong class="adaptive-font">Follow</strong>
-        <img src="assets/images/primitives/primitive_follow.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col-4 col-md-2 text-center">
-        <strong class="adaptive-font">Yield</strong>
-        <img src="assets/images/primitives/primitive_yield.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col-4 col-md-2 text-center">   
-        <strong class="adaptive-font">Avoid Region</strong>
-        <img src="assets/images/primitives/primitive_avoid.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-    <div class="col-4 col-md-2 text-center">
-        <strong class="adaptive-font">Walk over Region</strong>
-        <img src="assets/images/primitives/primitive_walk_over.gif" class="border border-2 border-dark rounded" alt="">
-    </div>
-</div> -->
-
 <h2>On-the-Fly Composition</h2>
 
 {% include_relative _layouts/simulation_compositions.html %}
@@ -131,45 +104,6 @@ ComposableNav is a diffusion-based planner for instruction-following navigation.
 # Real World Demonstrations
 
 {% include_relative _layouts/realworld.html %}
-
-
-<!-- 
-<div class="row">
-    <div class="col col-md-4 text-center">
-        <strong>Avoid the yellow caution cone and the black mat</strong>
-        <video autoplay loop muted playsinline controls preload="metadata">
-          <source src="assets/videos/gdc_avoid1.mp4" type="video/mp4"></source>
-        </video>
-    </div>
-    <div class="col col-md-4 text-center">
-        <strong>Steer clear of the group of people chatting ahead</strong>
-        <video autoplay loop muted playsinline controls preload="metadata">
-          <source src="assets/videos/gdc_avoid2.mp4" type="video/mp4"></source>
-        </video>
-    </div>
-    <div class="col col-md-4 text-center">
-        <strong>Slow down and let the approaching people cross first</strong>
-        <video autoplay loop muted playsinline controls preload="metadata">
-          <source src="assets/videos/gdc_yield.mp4" type="video/mp4"></source>
-        </video>
-    </div>
-</div>
-
-
-
-<div class="text-center">
-  <span class="d-inline-block" style="width:40%;">
-    <video class="w-100" autoplay loop muted playsinline controls preload="metadata">
-      <source src="assets/videos/gdc_overall.mp4" type="video/mp4">
-    </video>
-  </span>
-</div>
-
-## In the wild
-
-<video class="w-100" autoplay loop muted playsinline controls preload="metadata">
-  <source src="assets/videos/elevator_follow.mp4" type="video/mp4">
-</video> -->
 
 <hr>
 
