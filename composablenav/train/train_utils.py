@@ -104,7 +104,6 @@ def load_model(model, checkpoint, device):
     state_dict = torch.load(checkpoint)
     # if there is ema model, load it
     if state_dict.get("ema_state_dict"):
-        print("[Preprocess] Loading EMA model...")
         state_dict = state_dict["ema_state_dict"]
     elif state_dict.get("state_dict"):
         state_dict = state_dict["state_dict"]

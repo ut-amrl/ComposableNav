@@ -9,3 +9,4 @@ wandb/
 composablenav/**/*.gif
 composablenav/**/*.png
 composablenav/**/*.json
+.cache/

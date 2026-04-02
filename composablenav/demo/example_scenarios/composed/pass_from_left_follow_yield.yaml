@@ -1,0 +1,45 @@
+critics: []
+entities:
+- radius: 0.5
+  seed: 387
+  speed: 0.5
+  theta: 0.0
+  type: Circle
+  x: 2.6682088386395324
+  y: 0
+- radius: 0.5
+  seed: 358
+  speed: 0.7968097650780775
+  theta: -1.57079
+  type: Circle
+  x: 5.018204509464312
+  y: 5.185609806125409
+- radius: 0.5
+  seed: 422
+  speed: 0.8
+  theta: 0.0
+  type: Circle
+  x: 3.107853142923904
+  y: -1
+goal_pos:
+- 20
+- -1.5
+goal_radius: 2
+guidance_weight: 3
+mult_x: 1
+mult_y: 1
+tasks:
+- context_field: dynamic_obs_encoder
+  model_key: pass_from_left
+  obs_idx:
+  - 0
+- context_field: dynamic_obs_encoder
+  model_key: yield
+  obs_idx:
+  - 1
+- context_field: dynamic_obs_encoder
+  model_key: follow
+  obs_idx:
+  - 2
+total_batch_size: 10
+seed: 40

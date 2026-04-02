@@ -309,3 +309,73 @@ class RectangleCornerPrefer(RectangleCorner):
 
     def to_dict(self):
         return {'type': 'RectangleCornerPrefer', 'top': self.top, 'bottom': self.bottom, 'left': self.left, 'right': self.right}
+    
+
+class Human(Circle):
+    def __init__(self, future_positions, name, radius, dt_interval=0.25, **kwargs):
+        super().__init__(x=None, y=None, theta=None, speed=None, radius=radius)
+        self.future_positions = future_positions
+        self.name = name
+        self.dt_interval = dt_interval
+
+    def pos_at_dt(self, dt: float):
+        dt = round(dt / self.dt_interval)
+        if dt >= len(self.future_positions):
+            print(f"Warning: dt is greater than the length of future_positions: {dt} >= {len(self.future_positions)}")
+            raise Exception("Warning: dt is greater than the length of future_positions")
+        future_pos = self.future_positions[dt]
+        return future_pos[0], future_pos[1], self.theta
+    
+    def contains(self, x, y, dt, buffer):
+        dt_x, dt_y, _ = self.pos_at_dt(dt)
+        return (x - dt_x)**2 + (y - dt_y)**2 <= (self.radius + buffer)**2
+    
+    def draw(self, t):
+        # not using provided yaw but calculating it from the future positions
+        if round(t / self.dt_interval) > len(self.future_positions) - 1:
+            return 
+        
+        dt_x, dt_y, _ = self.pos_at_dt(t)
+        circle = plt.Circle((dt_y, dt_x), self.radius, color='g')
+        plt.gca().add_patch(circle)
+        plt.text(dt_y, dt_x, self.name, fontsize=12, color='black', ha='center', va='center')
+        
+        if round((t + self.dt_interval)/self.dt_interval) >= len(self.future_positions):
+            return
+        dt1_x, dt1_y, _ = self.pos_at_dt(t + self.dt_interval)
+        dt_theta = np.arctan2(round(dt1_y - dt_y, 5), round(dt1_x - dt_x, 5))
+
+        dx = np.cos(dt_theta)
+        dy = np.sin(dt_theta)
+        plt.arrow(dt_y, dt_x, dy, dx, head_width=0.1, head_length=0.1, fc='r', ec='r')
+        
+    def draw_with_offset(self, t, start_x, start_y, start_theta, x_offset, y_offset):
+        if t > len(self.future_positions) - 1:
+            return 
+        
+        start_offset = np.array([x_offset, y_offset, 0])
+        global_to_start = np.linalg.inv(np.array([[np.cos(start_theta), -np.sin(start_theta), start_x], 
+                                    [np.sin(start_theta), np.cos(start_theta), start_y],
+                                    [0, 0, 1]]))   
+            
+        dt_x, dt_y, _ = self.pos_at_dt(t)
+        dt_x, dt_y, _ = global_to_start @ np.array([dt_x, dt_y, 1]) + start_offset
+        circle = plt.Circle((dt_y, dt_x), self.radius, color='g')
+        plt.gca().add_patch(circle)
+        plt.text(dt_y, dt_x, self.name, fontsize=12, color='black', ha='center', va='center')
+        
+        if round((t + self.dt_interval)/self.dt_interval) >= len(self.future_positions):
+            return
+        dt1_x, dt1_y, _ = self.pos_at_dt(t + self.dt_interval)
+        dt1_x, dt1_y, _ = global_to_start @ np.array([dt1_x, dt1_y, 1]) + start_offset
+        dt_theta = np.arctan2(round(dt1_y - dt_y, 5), round(dt1_x - dt_x, 5))
+
+        dx = np.cos(dt_theta)
+        dy = np.sin(dt_theta)
+
+        # dx = np.cos(dt_theta - start_theta)
+        # dy = np.sin(dt_theta - start_theta)
+        plt.arrow(dt_y, dt_x, dy, dx, head_width=0.1, head_length=0.1, fc='r', ec='r')
+
+    def __str__(self) -> str:
+        return f"Human name {self.name}: num future positions: {len(self.future_positions)} | radius: {self.radius} | dt: {self.dt_interval}"

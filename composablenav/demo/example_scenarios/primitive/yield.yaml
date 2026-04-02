@@ -1,0 +1,39 @@
+critics:
+- args:
+    obstacle_front_max_dist: 4
+    obstacle_front_min_dist: 0
+    obstacle_width: 0.5
+  func_name: yield_boolean_criteria
+  instruction: Yield to Person {}
+  obs_idx:
+  - 0
+- args:
+    goal_radius: 2
+  func_name: goal_reaching_criteria
+  obs_idx: []
+- args:
+    goal_radius: 2
+  func_name: collision_criteria
+  obs_idx:
+  - 0
+entities:
+- radius: 0.5
+  speed: 0.75
+  theta: 1.57079
+  type: Circle
+  x: 4.948179322126702
+  y: -5.5
+goal_pos:
+- 20
+- 0
+goal_radius: 2
+guidance_weight: 3
+mult_x: 1
+mult_y: 1
+tasks:
+- context_field: dynamic_obs_encoder
+  model_key: yield
+  obs_idx:
+  - 0
+total_batch_size: 10
+seed: 40

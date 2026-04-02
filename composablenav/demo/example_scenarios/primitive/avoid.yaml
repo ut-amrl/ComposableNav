@@ -1,0 +1,21 @@
+critics: []
+entities:
+- bottom: 4
+  left: 4
+  right: -7
+  top: 8
+  type: RectangleCornerAvoid
+goal_pos:
+- 20
+- 0
+goal_radius: 2
+guidance_weight: 3
+mult_x: 1
+mult_y: 1
+tasks:
+- context_field: static_obs_encoder
+  model_key: pretrain_static
+  obs_idx:
+  - 0
+total_batch_size: 10
+seed: 40

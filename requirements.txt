@@ -13,3 +13,4 @@ lightning==2.5.5
 rich==14.2.0
 moviepy==1.0.3
 tensorboard==2.20.0
+huggingface_hub==1.8.0

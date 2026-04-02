@@ -10,6 +10,13 @@ from typing import Union
 from einops import repeat
 from composablenav.datasets import obstacles 
 
+def set_seed(seed=42):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # If you use multiple GPUs
+    torch.backends.cudnn.deterministic = True
+    np.random.seed(seed)
+    
 def get_path_from_motion(opt_u, start, dt):
     opt_u_np = np.array(opt_u)
 

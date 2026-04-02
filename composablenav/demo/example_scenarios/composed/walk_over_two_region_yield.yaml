@@ -1,0 +1,77 @@
+critics:
+- args: &id001
+    percentage: 0.1
+  func_name: walk_over_region_percent_boolean_criteria
+  instruction: Walk through Region {}
+  obs_idx:
+  - 0
+- args: *id001
+  func_name: walk_over_region_percent_boolean_criteria
+  instruction: Walk through Region {}
+  obs_idx:
+  - 1
+- args:
+    obstacle_front_max_dist: 4
+    obstacle_front_min_dist: 0
+    obstacle_width: 0.5
+  func_name: yield_boolean_criteria
+  instruction: Yield to Person {}
+  obs_idx:
+  - 2
+- args:
+    goal_radius: 2
+  func_name: goal_reaching_criteria
+  obs_idx: []
+- args:
+    goal_radius: 2
+  func_name: collision_criteria
+  obs_idx:
+  - 0
+  - 1
+  - 2
+entities:
+- bottom: 1.6745599972244964
+  left: 3.1688422672823506
+  right: 1.2176553829250676
+  top: 5.861714964383576
+  type: RectangleCornerPrefer
+- bottom: 8.348863435564866
+  left: -0.8775639683595587
+  right: -3.1077120815946904
+  top: 12.409930201552953
+  type: RectangleCornerPrefer
+- noise_mean: 0
+  noise_size:
+  - 129
+  - 2
+  noise_std: 0.1
+  planning_dt: 0.25
+  radius: 0.5
+  seed: 349
+  speed: 0.8720602419820821
+  theta: 1.57079
+  type: Circle
+  x: 6.025851538414997
+  y: -5.899770108683204
+goal_pos:
+- 20
+- 0
+goal_radius: 2
+guidance_weight: 3
+mult_x: 1
+mult_y: 1
+tasks:
+- context_field: terrain_encoder
+  model_key: walk_over
+  obs_idx:
+  - 0
+- context_field: terrain_encoder
+  model_key: walk_over
+  obs_idx:
+  - 1
+- context_field: dynamic_obs_encoder
+  model_key: yield
+  obs_idx:
+  - 2
+total_batch_size: 10
+seed: 40

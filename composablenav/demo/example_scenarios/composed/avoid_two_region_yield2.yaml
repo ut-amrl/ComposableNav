@@ -1,0 +1,85 @@
+critics:
+- args: &id001 {}
+  func_name: avoid_region_boolean_criteria
+  instruction: Avoid walking through Region {}
+  obs_idx:
+  - 0
+- args: *id001
+  func_name: avoid_region_boolean_criteria
+  instruction: Avoid walking through Region {}
+  obs_idx:
+  - 1
+- args:
+    obstacle_front_max_dist: 4
+    obstacle_front_min_dist: 0
+    obstacle_width: 0.5
+  func_name: yield_boolean_criteria
+  instruction: Yield to Person {}
+  obs_idx:
+  - 2
+- args:
+    goal_radius: 2
+  func_name: goal_reaching_criteria
+  obs_idx: []
+- args:
+    goal_radius: 2
+  func_name: collision_criteria
+  obs_idx:
+  - 0
+  - 1
+  - 2
+entities:
+- bottom: 3
+  # left: 4.612617267455347
+  left: 10
+  right: -0.9027380644728982
+  top: 4
+  type: RectangleCornerAvoid
+- bottom: 7
+  left: 2
+  # right: -4.755945490810812
+  right: -10
+  top: 9
+  type: RectangleCornerAvoid
+- noise_mean: 0
+  noise_size:
+  - 129
+  - 2
+  noise_std: 0.1
+  planning_dt: 0.25
+  radius: 0.5
+  seed: 632
+  speed: 0.868634157000263
+  theta: 1.57079
+  type: Circle
+  x: 5.6829925730823835
+  y: -7.2678077764599
+# - bottom: 0
+#   left: -6.0
+#   # right: -4.755945490810812
+#   right: -16
+#   top: 10
+#   type: RectangleCorner
+
+goal_pos:
+- 20
+- 0
+goal_radius: 2
+guidance_weight: 3
+mult_x: 1
+mult_y: 1
+tasks:
+- context_field: static_obs_encoder
+  model_key: avoid
+  obs_idx:
+  - 0
+- context_field: static_obs_encoder
+  model_key: avoid
+  obs_idx:
+  - 1
+- context_field: dynamic_obs_encoder
+  model_key: yield
+  obs_idx:
+  - 2
+total_batch_size: 10
+seed: 13

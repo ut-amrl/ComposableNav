@@ -1,0 +1,36 @@
+critics:
+- args:
+    percentage: 0.1
+  func_name: walk_over_region_percent_boolean_criteria
+  instruction: Walk through Region {}
+  obs_idx:
+  - 0
+- args:
+    goal_radius: 2
+  func_name: goal_reaching_criteria
+  obs_idx: []
+- args:
+    goal_radius: 2
+  func_name: collision_criteria
+  obs_idx:
+  - 0
+entities:
+- bottom: 6.089560688235037
+  left: -2.2611356796701507
+  right: -4.810303033225061
+  top: 13.6269567761395445
+  type: RectangleCornerPrefer
+goal_pos:
+- 20
+- 0
+goal_radius: 2
+guidance_weight: 3
+mult_x: 1
+mult_y: 1
+tasks:
+- context_field: terrain_encoder
+  model_key: walk_over
+  obs_idx:
+  - 0
+total_batch_size: 10
+seed: 40

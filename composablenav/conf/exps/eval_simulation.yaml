@@ -1,0 +1,40 @@
+# @package _global_
+
+defaults:
+  - /model/base_vit
+
+obstacle_radius: 0.5
+inference:
+  eval_models:
+    pretrain:
+      checkpoint: models/pretrain.ckpt
+    follow:
+      checkpoint: models/follow.ckpt
+    pass_from_left:
+      checkpoint: models/pass_from_left.ckpt
+    pass_from_right:
+      checkpoint: models/pass_from_right.ckpt
+    yield:
+      checkpoint: models/yield.ckpt
+    avoid:
+      checkpoint: models/avoid.ckpt
+    walk_over:
+      checkpoint: models/walk_over.ckpt
+
+compile: true
+anchor_model_key: pretrain
+grid_size: 20
+pos_offset: [-10, 0]
+max_planning_time: 128
+max_obj_traj_len: 384 # 128 * 3
+max_padded_obj_num: 10
+max_padded_terrain_num: 10
+diffusion_planning_dt: 0.25
+
+mpc_cfg:
+  max_dv: 1.0
+  max_dw: 0.78
+  max_v: 1.8
+  max_w: 1.2
+  env_dt: 0.1
+  plan_horizon: 400

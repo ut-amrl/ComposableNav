@@ -67,7 +67,8 @@ Each primitive (e.g., pass_from_left, follow, yield) is trained with its own rul
 
 ## 📊 Evaluation & Demo
 
-🚧 **Work in Progress:** Stay tuned for updates!
+
+See [run_demo.ipynb](./run_demo.ipynb) for instructions on running ComposableNav and generating composed trajectories.
 
 ## 🙏 Acknowledgment
 

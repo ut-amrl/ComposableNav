@@ -1,68 +1,30 @@
 import torch 
 from copy import deepcopy
 import numpy as np 
+from hydra.utils import instantiate
+from torch.func import functional_call
+from torch import vmap
+torch.set_float32_matmul_precision('high')
+
 from composablenav.models.diffusion import make_timesteps
 from composablenav.train.train_utils import load_model
 from composablenav.misc.common import repeat_context
 from composablenav.misc.process_data import construct_normalized_dynamic_obstacle_from_obj, construct_normalized_static_obstacle_from_obj
 from composablenav.train.dataloader_base import ProcessObsHelper
-from torch.func import functional_call
-from composablenav.models.diffusion import extract
-from composablenav.models.diffusion_components import exponential_beta_schedule
 
-def q_sample(x0, t):
-    n_timesteps = 25
-    beta = exponential_beta_schedule(n_timesteps)
-    alpha = 1 - beta
-    alpha_hat = torch.cumprod(alpha, dim=0)
-    sqrt_alpha_hat = torch.sqrt(alpha_hat)
-    sqrt_one_minus_alpha_hat = torch.sqrt(1 - alpha_hat)
-    
-    noise = torch.randn_like(x0)
-    return extract(sqrt_alpha_hat, t, x0.shape) * x0 + extract(sqrt_one_minus_alpha_hat, t, x0.shape) * noise
-
-def p_sample_loop(model_context_pair, batch_size, state_cond, 
-                  xt, guidance_weight, cfg_mask, device):
-    anchor_model = model_context_pair[0][0]
-    
-    xt = anchor_model.apply_cond_fn(xt, state_cond) # apply cond at the beginning
-    chain = [xt]
+def get_guided_diffusion_path_vmap(stacked_context_cond, anchor_model, base_model, params, buffers, 
+                                        num_models, cfg_mask,state_cond, n_timesteps, xt,
+                                        max_planning_time, batch_size, guidance_weight,
+                                        device, compile=False):  
+    if xt is None:
+        shape = (batch_size, max_planning_time, 2)
+        xt = torch.randn(*shape, device=device)
+    if n_timesteps is None:
+        n_timesteps = anchor_model.n_timesteps
         
-    for t_ in reversed(range(anchor_model.n_timesteps)):
-        t_cat = make_timesteps(t_, batch_size*2, device)
-        # p mean variance
-        noise_sum = 0
-        xt_cat = torch.cat([xt, xt], dim=0)
-        for idx, (diffusion_model, context_cond) in enumerate(model_context_pair):
-            noise_cond, noise_uncond = diffusion_model.model(xt_cat, t_cat, context_cond, cfg_mask).chunk(2)
-            noise = noise_uncond + guidance_weight * (noise_cond - noise_uncond)
-            noise_sum += noise
-            
-        noise_sum = noise_sum / len(model_context_pair)
-        t = t_cat[:batch_size]
-        
-        x0_recon = anchor_model.predict_start_from_noise(xt, t, noise_sum)
-        if anchor_model.clipped_denoised: # clip the denoised x0_recon
-            x0_recon = torch.clamp(x0_recon, -1, 1)
-        # end p mean variance
-        mean, variance, log_var_clipped = anchor_model.q_posterior(xt, t, x0_recon)
-        
-        added_noise = torch.randn_like(mean)
-        added_noise[t == 0] = 0
-        std = torch.exp(0.5 * log_var_clipped)
-        xt = mean + std * added_noise
-        # end sample
-        
-        xt = anchor_model.apply_cond_fn(xt, state_cond) # apply cond at the end
-        
-        chain.append(xt)
-        
+    chain = p_sample_loop_vmap(params, buffers, stacked_context_cond, base_model, anchor_model, num_models,
+                       batch_size, state_cond, n_timesteps, xt, guidance_weight, cfg_mask, device, compile)
     return chain
-
-from torch import vmap
-import time 
-from torch.cuda.amp import autocast
-torch.set_float32_matmul_precision('high')
 
 def p_sample_loop_vmap(params, buffers, stacked_context_cond, base_model, anchor_model, num_models,
                        batch_size, state_cond, n_timesteps, xt, guidance_weight, cfg_mask, device, compile=False):
@@ -87,25 +49,22 @@ def p_sample_loop_vmap(params, buffers, stacked_context_cond, base_model, anchor
             predictions1_vmap = vmap_fn(params, buffers, xt_cat, t_cat, stacked_context_cond, cfg_mask)
         
         predictions1_vmap = predictions1_vmap.detach()
-        # noise_sum = predictions1_vmap[:, 1] + guidance_weight * (predictions1_vmap[:, 0] - predictions1_vmap[:, 1]) # not correct
         diff = predictions1_vmap[:, :batch_size] - predictions1_vmap[:, batch_size:]
-        # noise_sum = predictions1_vmap[:, batch_size:].mean(dim=0) + (guidance_weight * diff).mean(dim=0) # for original cosine
         
-        noise_sum = predictions1_vmap[:, batch_size:].mean(dim=0) + (guidance_weight * diff).sum(dim=0) # for exponential
+        noise_sum = predictions1_vmap[:, batch_size:].mean(dim=0) + (guidance_weight * diff).sum(dim=0)
 
         t = t_cat[0, :batch_size]
         
         x0_recon = anchor_model.predict_start_from_noise(xt, t, noise_sum)
         if anchor_model.clipped_denoised: # clip the denoised x0_recon
             x0_recon = torch.clamp(x0_recon, -1, 1)
-        # end p mean variance
+
         mean, variance, log_var_clipped = anchor_model.q_posterior(xt, t, x0_recon)
         
         added_noise = torch.randn_like(mean)
         added_noise[t == 0] = 0
         std = torch.exp(0.5 * log_var_clipped)
         xt = mean + std * added_noise
-        # end sample
         
         xt = anchor_model.apply_cond_fn(xt, state_cond) # apply cond at the end
         
@@ -116,14 +75,9 @@ def p_sample_loop_vmap(params, buffers, stacked_context_cond, base_model, anchor
 def load_diffusion_models(cfg, device):
     models = {}
     for key, model_cfg in cfg.inference.eval_models.items():
-        print(f"Loading model {key}")
-        model_type = model_cfg.model_type
-        checkpoint = model_cfg.checkpoint
-        if model_type == "diffusion_models":
-            diffusion_model = load_model(model_cfg, model_path=checkpoint, device=device) 
-            models[key] = diffusion_model
-        else:
-            raise ValueError("Invalid model name")
+        model = instantiate(cfg.model)
+        diffusion_model = load_model(model, model_cfg.checkpoint, device)
+        models[key] = diffusion_model
 
     return models
 
@@ -177,12 +131,6 @@ def context_constructor(cfg, dynamic_obs, static_obs, terrain_obs,
     }
     return context_cond, state_cond
 
-def construct_state_cond_from_traversed_path(traversed_path, device):
-    state_cond = {}
-    for idx, p in enumerate(traversed_path):
-        state_cond[str(idx)] = torch.tensor([p], device=device)
-    return state_cond
-
 def construct_context_state_conds(diffusion_models, context_cond, meta_data):
     model_key = meta_data["model_key"]
     obs_idxs = meta_data["obs_idx"]
@@ -196,3 +144,65 @@ def construct_context_state_conds(diffusion_models, context_cond, meta_data):
     tmp_context_cond[context_field]["mask"][:, obs_idxs] = 1
     model = diffusion_models[model_key]
     return model, tmp_context_cond
+
+def stack_dictionaries_list(dicts_list):
+    """
+    Stacks tensor values across a list of dictionaries by recursively stacking
+    values for each key across all dictionaries in the list.
+    """
+    # Initialize the result dictionary
+    stacked_dict = {}
+
+    # Get the keys from the first dictionary (assuming all dicts have the same structure)
+    keys = dicts_list[0].keys()
+
+    for key in keys:
+        values = [d[key] for d in dicts_list]
+        if isinstance(values[0], dict):
+            # Recursively handle nested dictionaries
+            stacked_dict[key] = stack_dictionaries_list(values)
+        
+        elif isinstance(values[0], torch.Tensor):
+            # Stack tensors along a new dimension
+            stacked_dict[key] = torch.stack(values, dim=0)
+        elif isinstance(values[0], list) and isinstance(values[0][0], torch.Tensor):
+            # Recursively handle nested dictionaries
+            stacked_dict[key] = [torch.stack(o, dim=0) for o in zip(*values)]
+        else:
+            # If values are not tensors, you can customize this part as needed
+            stacked_dict[key] = values
+    
+    return stacked_dict
+
+def fast_interpolate_path(path: np.ndarray, interval_original: float, interval_new: float):
+    """
+    Interpolates a path to match a new resolution, even for coarser intervals.
+    
+    Parameters:
+    - path (np.ndarray): Original path of shape (N, 2), where each row is [x, y].
+    - interval_original (float): Time interval between points in the original path.
+    - interval_new (float): Desired time interval between points in the output path.
+    
+    Returns:
+    - np.ndarray: Interpolated path with the new resolution.
+    """
+    # Calculate the total time of the path
+    total_time = (len(path) - 1) * interval_original
+    
+    # Generate time indices for original and new paths
+    times_original = np.arange(0, total_time + interval_original, interval_original)[:len(path)] # solve the off by one error
+    times_new = np.arange(0, total_time + interval_new, interval_new)
+    
+    # Interpolate x and y separately
+    path_interpolated = np.empty((len(times_new), 2), dtype=path.dtype)
+    for dim in range(2):
+        path_interpolated[:, dim] = np.interp(times_new, times_original, path[:, dim])
+    
+        # extrapolate the last point
+        last_val = path_interpolated[-1, dim]
+        second_last_val = path_interpolated[-2, dim]
+        dt = total_time - (len(path_interpolated) - 2) * interval_new
+        ratio = dt / interval_new
+        diff = (last_val - second_last_val) / ratio
+        path_interpolated[-1, dim] = second_last_val + diff
+    return path_interpolated
